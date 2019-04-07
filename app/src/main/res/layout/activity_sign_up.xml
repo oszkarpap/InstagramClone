@@ -73,5 +73,24 @@
             tools:layout_editor_absoluteX="161dp"
             tools:layout_editor_absoluteY="517dp" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:text="xxx"
+            android:id="@+id/txt"/>
+
+        <Button
+            android:layout_gravity="center"
+            android:id="@+id/btngetAllData"
+            android:textColor="#ffffff"
+            android:layout_width="wrap_content"
+            android:backgroundTint="@color/colorPrimaryDark"
+            android:layout_height="wrap_content"
+            android:text="Get all Data from Server"
+            tools:layout_editor_absoluteX="161dp"
+            tools:layout_editor_absoluteY="517dp" />
+
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>
