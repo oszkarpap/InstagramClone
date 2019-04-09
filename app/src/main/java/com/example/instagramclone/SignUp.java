@@ -107,6 +107,7 @@ public class SignUp extends AppCompatActivity implements View.OnClickListener {
 
                 Intent intent = new Intent(SignUp.this, LoginActivity.class);
                 startActivity(intent);
+                finish();
 
                 break;
         }
@@ -130,6 +131,7 @@ public class SignUp extends AppCompatActivity implements View.OnClickListener {
     public void transitiontoSocialMediaActivity(){
         Intent intent = new Intent(SignUp.this, SocialMediaActivity.class);
         startActivity(intent);
+        finish();
     }
 
 }
