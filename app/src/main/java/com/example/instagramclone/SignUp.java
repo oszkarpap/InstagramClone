@@ -1,9 +1,12 @@
 package com.example.instagramclone;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -14,122 +17,120 @@ import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
 import com.parse.SaveCallback;
+import com.parse.SignUpCallback;
 import com.shashank.sony.fancytoastlib.FancyToast;
 
 import org.w3c.dom.Text;
 
+import java.net.PasswordAuthentication;
 import java.util.List;
 
 public class SignUp extends AppCompatActivity implements View.OnClickListener {
 
-    private Button btnSave, btnGetAllData, btnTransition;
-    private EditText edtName, edtPS, edtPP, edtKS, edtKP;
-    private TextView textView;
-    private String allKickBoxers;
-
+    private EditText edtEmail, edtUsername, edtpassword;
+    private Button btnSignUp, btnLogIn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
 
-        btnSave = findViewById(R.id.button);
-        btnSave.setOnClickListener(SignUp.this);
-        btnGetAllData = findViewById(R.id.btngetAllData);
-        edtName = findViewById(R.id.editName);
-        edtPS = findViewById(R.id.editPS);
-        edtPP = findViewById(R.id.editPP);
-        edtKS = findViewById(R.id.editKS);
-        edtKP = findViewById(R.id.editKP);
-
-        textView = findViewById(R.id.txt);
-        textView.setOnClickListener(new View.OnClickListener() {
+        edtEmail = findViewById(R.id.edtEnterEmail);
+        edtUsername = findViewById(R.id.edtEnterUsername);
+        edtpassword = findViewById(R.id.edtEnterPasword);
+        edtpassword.setOnKeyListener(new View.OnKeyListener() {
             @Override
-            public void onClick(View v) {
-                ParseQuery<ParseObject> parseQuery = ParseQuery.getQuery("KickBoxer");
-                parseQuery.getInBackground("PObAnB1g26", new GetCallback<ParseObject>() {
-                    @Override
-                    public void done(ParseObject object, ParseException e) {
-                        if(object!=null && e == null){
-                            textView.setText(object.get("name")+" - "+object.get("punchPower") );
-                        }
-                    }
-                });
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+
+                if (keyCode == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN) {
+                    onClick(btnSignUp);
+                }
+
+                return false;
             }
         });
 
+        btnSignUp = findViewById(R.id.btnSignUp);
+        btnLogIn = findViewById(R.id.btnLogin);
 
-        btnGetAllData.setOnClickListener(new View.OnClickListener() {
-
-
-
-            @Override
-            public void onClick(View v) {
-
-                allKickBoxers = "";
-
-                ParseQuery<ParseObject> queryAll = ParseQuery.getQuery("KickBoxer");
-                queryAll.whereGreaterThan("punchPower", 100);
-                queryAll.setLimit(1);
-
-                queryAll.findInBackground(new FindCallback<ParseObject>() {
-                    @Override
-                    public void done(List<ParseObject> objects, ParseException e) {
-                        if (e == null){
-                            if(objects.size() > 0){
-                                for (ParseObject kickBoxer : objects){
-                                    allKickBoxers = allKickBoxers + kickBoxer.get("name") + "\n";
-
-                                }
+        setTitle("Sign Up");
+        btnLogIn.setOnClickListener(this);
+        btnSignUp.setOnClickListener(this);
 
 
-                                Toast.makeText(SignUp.this, allKickBoxers, Toast.LENGTH_SHORT).show();
-                            }else{
-                                Toast.makeText(SignUp.this, e.getMessage()+"", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    }
-                });
-            }
-        });
+        if (ParseUser.getCurrentUser() != null) {
+            //ParseUser.getCurrentUser().logOut();
+            transitiontoSocialMediaActivity();
+        }
 
-        btnTransition = findViewById(R.id.btnTransition);
-        btnTransition.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(SignUp.this, SignUpLoginActivity.class);
-                startActivity(intent);
-            }
-        });
+
     }
-
 
     @Override
     public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.btnSignUp:
+
+                if (edtEmail.getText().toString().equals("") || edtUsername.getText().toString().equals("") || edtpassword.getText().toString().equals("")) {
+                    Toast.makeText(this, "Email, Username, Password is required!", Toast.LENGTH_SHORT).show();
+
+                } else {
+
+                    final ParseUser appUser = new ParseUser();
+                    appUser.setEmail(edtEmail.getText().toString());
+                    appUser.setUsername(edtUsername.getText().toString());
+                    appUser.setPassword(edtpassword.getText().toString());
+
+
+                    final ProgressDialog progressDialog = new ProgressDialog(this);
+                    progressDialog.setMessage("Signing up " + edtUsername.getText().toString());
+                    progressDialog.show();
+
+                    appUser.signUpInBackground(new SignUpCallback() {
+                        @Override
+                        public void done(ParseException e) {
+                            if (e == null) {
+                                Toast.makeText(SignUp.this, appUser.get("username") + " is signed up successfully", Toast.LENGTH_SHORT).show();
+                                    transitiontoSocialMediaActivity();
+                            } else {
+                                Toast.makeText(SignUp.this, e.getMessage() + "", Toast.LENGTH_SHORT).show();
+                            }
+
+                            progressDialog.dismiss();
+                        }
+                    });
+                }
+                break;
+            case R.id.btnLogin:
+
+                Intent intent = new Intent(SignUp.this, LoginActivity.class);
+                startActivity(intent);
+
+                break;
+        }
+
+
+    }
+
+
+    public void rootLayoutTapped(View view) {
 
         try {
-            final ParseObject kickBoxer = new ParseObject("KickBoxer");
-            kickBoxer.put("name", edtName.getText().toString());
-            kickBoxer.put("punchSpeed", Integer.parseInt(edtPS.getText().toString()));
-            kickBoxer.put("punchPower", Integer.parseInt(edtPP.getText().toString()));
-            kickBoxer.put("kickSpeed", Integer.parseInt(edtKS.getText().toString()));
-            kickBoxer.put("kickpower", Integer.parseInt(edtKP.getText().toString()));
-            kickBoxer.saveInBackground(new SaveCallback() {
-                @Override
-                public void done(ParseException e) {
-                    if (e == null) {
 
-                        FancyToast.makeText(SignUp.this, kickBoxer.get("name") + " is save to server", FancyToast.LENGTH_SHORT, FancyToast.SUCCESS, true).show();
-                    } else {
-                        Toast.makeText(SignUp.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                }
-            });
-
+            InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+            inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
         } catch (Exception e) {
-            FancyToast.makeText(SignUp.this, e.getMessage(), FancyToast.LENGTH_SHORT, FancyToast.ERROR, true).show();
-
+            e.printStackTrace();
         }
+
     }
+
+    public void transitiontoSocialMediaActivity(){
+        Intent intent = new Intent(SignUp.this, SocialMediaActivity.class);
+        startActivity(intent);
+    }
+
 }
+

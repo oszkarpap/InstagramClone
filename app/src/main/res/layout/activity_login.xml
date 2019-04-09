@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:onClick="rootLayoutTapped"
-    tools:context=".SignUp">
+    tools:context=".LoginActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -14,13 +13,13 @@
         android:padding="10dp">
 
         <ImageView
-            android:layout_gravity="center"
             android:layout_width="128dp"
             android:layout_height="128dp"
-            android:src="@drawable/insa_logo"/>
+            android:layout_gravity="center"
+            android:src="@drawable/insa_logo" />
 
         <EditText
-            android:id="@+id/edtEnterEmail"
+            android:id="@+id/edtloginEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -29,19 +28,9 @@
             android:hint="Enter an e-mail"
             android:inputType="textPersonName" />
 
-        <EditText
-            android:id="@+id/edtEnterUsername"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:ems="10"
-            android:hint="Enter an username"
-            android:inputType="textPersonName" />
-
 
         <EditText
-            android:id="@+id/edtEnterPasword"
+            android:id="@+id/edtLoginPasword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -52,28 +41,27 @@
 
 
         <Button
-            android:id="@+id/btnSignUp"
+            android:id="@+id/btnLoginActivity"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:backgroundTint="@color/colorPrimaryDark"
-            android:text="SING UP"
+            android:text=" LOG IN "
             android:textColor="#ffffff"
             tools:layout_editor_absoluteX="161dp"
             tools:layout_editor_absoluteY="517dp" />
 
 
         <Button
-            android:id="@+id/btnLogin"
+            android:id="@+id/btnSingUpLoginActivty"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:backgroundTint="@color/colorPrimaryDark"
-            android:text="LOG IN"
+            android:text=" SIGN UP "
             android:textColor="#ffffff"
             tools:layout_editor_absoluteX="161dp"
             tools:layout_editor_absoluteY="517dp" />
-
 
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>
